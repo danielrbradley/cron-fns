@@ -1,3 +1,5 @@
+import { parse } from "@babel/core";
+
 /** @name Schedule
  *  @description Any field which is not defined or empty is assumed to be unconstrained.
  */
@@ -18,36 +20,66 @@ function parseCron(input: string): Schedule {
 function findNext(
   current: number,
   schedule: undefined | number[]
-): [val: number, carry: boolean] {
+): [val: number, carry: boolean, changed: boolean] {
   if (!schedule || schedule.length === 0) {
-    return [current, false];
+    return [current, false, false];
   }
   for (const n of schedule) {
     if (n >= current) {
-      return [n, false];
+      return [n, false, n !== current];
     }
   }
-  return [schedule[0], true];
+  return [schedule[0], true, true];
 }
 
 /** @returns Boolean indicating if we've moved to a new day */
 function moveToNextValidTime(current: Date, schedule: Schedule): boolean {
-  const [second, carryMinute] = findNext(current.getSeconds(), schedule.second);
+  let [hour, carryDay, hourChange] = findNext(
+    current.getHours(),
+    schedule.hour
+  );
+  if (hourChange) {
+    current.setHours(
+      hour,
+      findNext(0, schedule.minute)[0],
+      findNext(0, schedule.second)[0]
+    );
+    return carryDay;
+  }
+
+  let [minute, carryHour, minuteChange] = findNext(
+    current.getMinutes(),
+    schedule.minute
+  );
+  if (minuteChange) {
+    if (carryHour) {
+      let [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
+      current.setHours(hour, minute, findNext(0, schedule.second)[0]);
+      return carryDay;
+    } else {
+      current.setMinutes(minute, findNext(0, schedule.second)[0]);
+      return false;
+    }
+  }
+
+  const [second, carryMinute, secondChange] = findNext(
+    current.getSeconds(),
+    schedule.second
+  );
   if (!carryMinute) {
-    current.setSeconds(second);
+    if (secondChange) {
+      current.setSeconds(second);
+    }
     return false;
   }
 
-  const [minute, carryHour] = findNext(
-    current.getMinutes() + 1,
-    schedule.minute
-  );
+  [minute, carryHour] = findNext(current.getMinutes() + 1, schedule.minute);
   if (!carryHour) {
     current.setMinutes(minute, second);
     return false;
   }
 
-  const [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
+  [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
   current.setHours(hour, minute, second);
   return carryDay;
 }

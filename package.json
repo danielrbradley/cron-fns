@@ -1,0 +1,13 @@
+{
+  "name": "cron-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Daniel Bradley",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.5"
+  }
+}

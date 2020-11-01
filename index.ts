@@ -1,0 +1,135 @@
+/** @name Schedule
+ *  @description Any field which is not defined or empty is assumed to be unconstrained.
+ */
+export type Schedule = {
+  second?: number[];
+  minute?: number[];
+  hour?: number[];
+  dayOfMonth?: number[];
+  month?: number[];
+  dayOfWeek?: number[];
+  year?: number[];
+};
+
+function parseCron(input: string): Schedule {
+  throw new Error("Not implemented"); // TODO
+}
+
+function findNext(
+  current: number,
+  schedule: undefined | number[]
+): [val: number, carry: boolean] {
+  if (!schedule || schedule.length === 0) {
+    return [current, false];
+  }
+  for (const n of schedule) {
+    if (n >= current) {
+      return [n, false];
+    }
+  }
+  return [schedule[0], true];
+}
+
+/** @returns Boolean indicating if we've moved to a new day */
+function moveToNextValidTime(current: Date, schedule: Schedule): boolean {
+  const [second, carryMinute] = findNext(current.getSeconds(), schedule.second);
+  if (!carryMinute) {
+    current.setSeconds(second);
+    return false;
+  }
+
+  const [minute, carryHour] = findNext(
+    current.getMinutes() + 1,
+    schedule.minute
+  );
+  if (!carryHour) {
+    current.setMinutes(minute, second);
+    return false;
+  }
+
+  const [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
+  current.setHours(hour, minute, second);
+  return carryDay;
+}
+
+function isDateValid(current: Date, schedule: Schedule): boolean {
+  return (
+    (!schedule.year || schedule.year.indexOf(current.getFullYear()) > -1) &&
+    (!schedule.month || schedule.month.indexOf(current.getMonth()) > -1) &&
+    (!schedule.dayOfMonth ||
+      schedule.dayOfMonth.indexOf(current.getDate()) > -1) &&
+    (!schedule.dayOfWeek || schedule.dayOfWeek.indexOf(current.getDay()) > -1)
+  );
+}
+
+/** @returns Boolean indicating if we've found a next possible day */
+function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
+  const initialYear = current.getFullYear();
+  let [year, yearNotFound] = findNext(initialYear, schedule.year);
+  if (!yearNotFound) return false;
+  if (year !== initialYear) {
+    current.setFullYear(year, 0, 1);
+  }
+
+  const [date, carryMonth] = findNext(current.getDate(), schedule.dayOfMonth);
+  if (!carryMonth) {
+    current.setDate(date);
+    return true;
+  }
+
+  const [month, carryYear] = findNext(current.getMonth() + 1, schedule.month);
+  if (!carryYear) {
+    current.setMonth(month, date);
+    return true;
+  }
+
+  [year, yearNotFound] = findNext(current.getHours() + 1, schedule.hour);
+  if (yearNotFound) return false;
+
+  current.setFullYear(year, month, date);
+  return true;
+}
+
+/** @returns 0 if unchanged, 1 if changed, -1 if unavailable */
+function moveToNextValidDate(current: Date, schedule: Schedule): 0 | 1 | -1 {
+  let isValid = isDateValid(current, schedule);
+  if (isValid) return 0;
+
+  do {
+    if (!moveToNextPossibleDate(current, schedule)) {
+      return -1;
+    }
+  } while (!isDateValid(current, schedule));
+
+  return 1;
+}
+
+export const next = (
+  schedule: Schedule | string,
+  from: Date
+): Date | undefined => {
+  const parsedSchedule =
+    typeof schedule === "string" ? parseCron(schedule) : schedule;
+  const date = new Date(from.getTime());
+  switch (moveToNextValidDate(date, parsedSchedule)) {
+    case -1:
+      return undefined;
+    case 0:
+      date.setSeconds(date.getSeconds() + 1, 0);
+      break;
+    case 1:
+      date.setHours(0, 0, 0, 0);
+      break;
+  }
+
+  const carryDay = moveToNextValidTime(date, parsedSchedule);
+
+  if (!carryDay) {
+    return date;
+  }
+
+  if (moveToNextValidDate(date, parsedSchedule) === -1) {
+    return undefined;
+  }
+  return date;
+};

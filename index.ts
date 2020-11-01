@@ -171,6 +171,7 @@ export const next = (
     return date;
   }
 
+  date.setDate(date.getDate() + 1);
   if (moveToNextValidDate(date, parsedSchedule) === -1) {
     return undefined;
   }

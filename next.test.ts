@@ -30,11 +30,30 @@ test("hours", () => {
   expect(next({ hour: [4] }, input)).toEqual(expected);
 });
 
+test("day of week", () => {
+  const input = new Date("2020-01-01T00:00:00");
+  const expected = new Date("2020-01-07T00:00:00");
+  const schedule = {
+    dayOfWeek: [2],
+  };
+  expect(next(schedule, input)).toEqual(expected);
+});
+
 test("day of month", () => {
   const input = new Date("2020-01-01T00:00:00");
   const expected = new Date("2020-01-02T00:00:00");
   const schedule = {
     dayOfMonth: [2],
+  };
+  expect(next(schedule, input)).toEqual(expected);
+});
+
+test("day of month and week", () => {
+  const input = new Date("2020-01-01T00:00:00");
+  const expected = new Date("2020-02-03T00:00:00");
+  const schedule = {
+    dayOfMonth: [3],
+    dayOfWeek: [1],
   };
   expect(next(schedule, input)).toEqual(expected);
 });

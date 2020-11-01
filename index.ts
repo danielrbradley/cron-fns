@@ -94,6 +94,9 @@ function isDateValid(current: Date, schedule: Schedule): boolean {
 
 /** @returns Boolean indicating if we've found a next possible day */
 function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
+  // Increment date
+  current.setDate(current.getDate() + 1);
+
   let [year, noMoreYears, yearChanged] = findNext(
     current.getFullYear(),
     schedule.year

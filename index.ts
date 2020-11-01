@@ -1,9 +1,7 @@
-import { parse } from "@babel/core";
-
 /** @name Schedule
  *  @description Any field which is not defined or empty is assumed to be unconstrained.
  */
-export type Schedule = {
+type Schedule = {
   second?: number[];
   minute?: number[];
   hour?: number[];
@@ -96,29 +94,42 @@ function isDateValid(current: Date, schedule: Schedule): boolean {
 
 /** @returns Boolean indicating if we've found a next possible day */
 function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
-  const initialYear = current.getFullYear();
-  let [year, yearNotFound] = findNext(initialYear, schedule.year);
-  if (!yearNotFound) return false;
-  if (year !== initialYear) {
+  let [year, noMoreYears, yearChanged] = findNext(
+    current.getFullYear(),
+    schedule.year
+  );
+  if (noMoreYears) return false;
+  if (yearChanged) {
     current.setFullYear(year, 0, 1);
+    return true;
   }
 
-  const [date, carryMonth] = findNext(current.getDate(), schedule.dayOfMonth);
-  if (!carryMonth) {
+  let [month, carryYear, monthChanged] = findNext(
+    current.getMonth(),
+    schedule.month
+  );
+  if (carryYear) {
+    current.setFullYear(current.getFullYear() + 1, month, 1);
+    return true;
+  }
+  if (monthChanged) {
+    current.setMonth(month, 1);
+    return true;
+  }
+
+  const [date, carryMonth, dateChanged] = findNext(
+    current.getDate(),
+    schedule.dayOfMonth
+  );
+  if (carryMonth) {
+    current.setMonth(current.getMonth() + 1, date);
+    return true;
+  }
+  if (dateChanged) {
     current.setDate(date);
     return true;
   }
 
-  const [month, carryYear] = findNext(current.getMonth() + 1, schedule.month);
-  if (!carryYear) {
-    current.setMonth(month, date);
-    return true;
-  }
-
-  [year, yearNotFound] = findNext(current.getHours() + 1, schedule.hour);
-  if (yearNotFound) return false;
-
-  current.setFullYear(year, month, date);
   return true;
 }
 

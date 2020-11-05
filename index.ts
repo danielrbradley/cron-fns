@@ -103,7 +103,11 @@ function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
   );
   if (noMoreYears) return false;
   if (yearChanged) {
-    current.setFullYear(year, 0, 1);
+    current.setFullYear(
+      year,
+      findNext(0, schedule.month)[0],
+      findNext(1, schedule.dayOfMonth)[0]
+    );
     return true;
   }
 
@@ -112,11 +116,15 @@ function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
     schedule.month
   );
   if (carryYear) {
-    current.setFullYear(current.getFullYear() + 1, month, 1);
+    current.setFullYear(
+      current.getFullYear() + 1,
+      month,
+      findNext(1, schedule.dayOfMonth)[0]
+    );
     return true;
   }
   if (monthChanged) {
-    current.setMonth(month, 1);
+    current.setMonth(month, findNext(1, schedule.dayOfMonth)[0]);
     return true;
   }
 

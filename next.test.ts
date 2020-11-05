@@ -156,3 +156,13 @@ test("roll all", () => {
   };
   expect(next(schedule, input)).toEqual(expected);
 });
+
+test("changing DST when iterating", () => {
+  const input = new Date("2020-01-01T00:00:00");
+  const expected = new Date("2020-09-02T00:00:00");
+  const schedule = {
+    dayOfMonth: [2],
+    dayOfWeek: [3],
+  };
+  expect(next(schedule, input)).toEqual(expected);
+});

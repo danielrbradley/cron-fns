@@ -1,15 +1,15 @@
 /** @name Schedule
  *  @description Any field which is not defined or empty is assumed to be unconstrained.
  */
-type Schedule = {
-  second?: number[];
-  minute?: number[];
-  hour?: number[];
-  dayOfMonth?: number[];
-  month?: number[];
-  dayOfWeek?: number[];
-  year?: number[];
-};
+type Schedule = [
+  second: number[] | undefined,
+  minute: number[] | undefined,
+  hour: number[] | undefined,
+  dayOfMonth: number[] | undefined,
+  month: number[] | undefined,
+  dayOfWeek: number[] | undefined,
+  year: number[] | undefined
+];
 
 enum Field {
   second = 0,
@@ -109,22 +109,7 @@ export function parse(input: string): Schedule {
   const hasSeconds = fields.length === 7;
   if (!hasSeconds) fields.unshift("0");
   if (!hasYear) fields.push("*");
-  const parsedFields = fields.map(parseField);
-  const parsed: any = {
-    second: parsedFields[0],
-    minute: parsedFields[1],
-    hour: parsedFields[2],
-    dayOfMonth: parsedFields[3],
-    month: parsedFields[4],
-    dayOfWeek: parsedFields[5],
-    year: parsedFields[6],
-  };
-  for (const field of Object.keys(parsed)) {
-    if (!parsed[field]) {
-      delete parsed[field];
-    }
-  }
-  return parsed;
+  return fields.map(parseField) as Schedule;
 }
 
 function findNext(
@@ -146,35 +131,38 @@ function findNext(
 function moveToNextValidTime(current: Date, schedule: Schedule): boolean {
   let [hour, carryDay, hourChange] = findNext(
     current.getHours(),
-    schedule.hour
+    schedule[Field.hour]
   );
   if (hourChange) {
     current.setHours(
       hour,
-      findNext(0, schedule.minute)[0],
-      findNext(0, schedule.second)[0]
+      findNext(0, schedule[Field.minute])[0],
+      findNext(0, schedule[Field.second])[0]
     );
     return carryDay;
   }
 
   let [minute, carryHour, minuteChange] = findNext(
     current.getMinutes(),
-    schedule.minute
+    schedule[Field.minute]
   );
   if (minuteChange) {
     if (carryHour) {
-      let [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
-      current.setHours(hour, minute, findNext(0, schedule.second)[0]);
+      let [hour, carryDay] = findNext(
+        current.getHours() + 1,
+        schedule[Field.hour]
+      );
+      current.setHours(hour, minute, findNext(0, schedule[Field.second])[0]);
       return carryDay;
     } else {
-      current.setMinutes(minute, findNext(0, schedule.second)[0]);
+      current.setMinutes(minute, findNext(0, schedule[Field.second])[0]);
       return false;
     }
   }
 
   const [second, carryMinute, secondChange] = findNext(
     current.getSeconds(),
-    schedule.second
+    schedule[Field.second]
   );
   if (!carryMinute) {
     if (secondChange) {
@@ -183,24 +171,30 @@ function moveToNextValidTime(current: Date, schedule: Schedule): boolean {
     return false;
   }
 
-  [minute, carryHour] = findNext(current.getMinutes() + 1, schedule.minute);
+  [minute, carryHour] = findNext(
+    current.getMinutes() + 1,
+    schedule[Field.minute]
+  );
   if (!carryHour) {
     current.setMinutes(minute, second);
     return false;
   }
 
-  [hour, carryDay] = findNext(current.getHours() + 1, schedule.hour);
+  [hour, carryDay] = findNext(current.getHours() + 1, schedule[Field.hour]);
   current.setHours(hour, minute, second);
   return carryDay;
 }
 
 function isDateValid(current: Date, schedule: Schedule): boolean {
+  const year = schedule[Field.year];
+  const month = schedule[Field.month];
+  const dayOfMonth = schedule[Field.dayOfMonth];
+  const dayOfWeek = schedule[Field.dayOfWeek];
   return (
-    (!schedule.year || schedule.year.indexOf(current.getFullYear()) > -1) &&
-    (!schedule.month || schedule.month.indexOf(current.getMonth()) > -1) &&
-    (!schedule.dayOfMonth ||
-      schedule.dayOfMonth.indexOf(current.getDate()) > -1) &&
-    (!schedule.dayOfWeek || schedule.dayOfWeek.indexOf(current.getDay()) > -1)
+    (!year || year.indexOf(current.getFullYear()) > -1) &&
+    (!month || month.indexOf(current.getMonth()) > -1) &&
+    (!dayOfMonth || dayOfMonth.indexOf(current.getDate()) > -1) &&
+    (!dayOfWeek || dayOfWeek.indexOf(current.getDay()) > -1)
   );
 }
 
@@ -211,38 +205,38 @@ function moveToNextPossibleDate(current: Date, schedule: Schedule): boolean {
 
   let [year, noMoreYears, yearChanged] = findNext(
     current.getFullYear(),
-    schedule.year
+    schedule[Field.year]
   );
   if (noMoreYears) return false;
   if (yearChanged) {
     current.setFullYear(
       year,
-      findNext(0, schedule.month)[0],
-      findNext(1, schedule.dayOfMonth)[0]
+      findNext(0, schedule[Field.month])[0],
+      findNext(1, schedule[Field.dayOfMonth])[0]
     );
     return true;
   }
 
   let [month, carryYear, monthChanged] = findNext(
     current.getMonth(),
-    schedule.month
+    schedule[Field.month]
   );
   if (carryYear) {
     current.setFullYear(
       current.getFullYear() + 1,
       month,
-      findNext(1, schedule.dayOfMonth)[0]
+      findNext(1, schedule[Field.dayOfMonth])[0]
     );
     return true;
   }
   if (monthChanged) {
-    current.setMonth(month, findNext(1, schedule.dayOfMonth)[0]);
+    current.setMonth(month, findNext(1, schedule[Field.dayOfMonth])[0]);
     return true;
   }
 
   const [date, carryMonth, dateChanged] = findNext(
     current.getDate(),
-    schedule.dayOfMonth
+    schedule[Field.dayOfMonth]
   );
   if (carryMonth) {
     current.setMonth(current.getMonth() + 1, date);

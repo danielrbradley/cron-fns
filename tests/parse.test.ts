@@ -1,68 +1,64 @@
 import { parse } from "../index";
 
+const u = undefined;
+const schedule = (...schedule: ReturnType<typeof parse>) => schedule;
+
 test("5 wildcards", () => {
-  expect(parse("* * * * *")).toEqual({
-    second: [0],
-  });
+  expect(parse("* * * * *")).toEqual(schedule([0], u, u, u, u, u, u));
 });
 
 test("6 wildcards", () => {
-  expect(parse("* * * * * *")).toEqual({
-    second: [0],
-  });
+  expect(parse("* * * * * *")).toEqual(schedule([0], u, u, u, u, u, u));
 });
 
 test("7 wildcards", () => {
-  expect(parse("* * * * * * *")).toEqual({});
+  expect(parse("* * * * * * *")).toEqual(schedule(u, u, u, u, u, u, u));
 });
 
 test("midnight", () => {
-  expect(parse("0 0 * * * *")).toEqual({ second: [0], minute: [0], hour: [0] });
+  expect(parse("0 0 * * * *")).toEqual(schedule([0], [0], [0], u, u, u, u));
 });
 
 test("afternoon hours", () => {
-  expect(parse("0 12-23 * * * *")).toEqual({
-    second: [0],
-    minute: [0],
-    hour: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-  });
+  expect(parse("0 12-23 * * * *")).toEqual(
+    schedule(
+      [0],
+      [0],
+      [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+      u,
+      u,
+      u,
+      u
+    )
+  );
 });
 
 test("specific days", () => {
-  expect(parse("0 0 1,4,10,31 * * *")).toEqual({
-    second: [0],
-    minute: [0],
-    hour: [0],
-    dayOfMonth: [1, 4, 10, 31],
-  });
+  expect(parse("0 0 1,4,10,31 * * *")).toEqual(
+    schedule([0], [0], [0], [1, 4, 10, 31], u, u, u)
+  );
 });
 
 test("month adjustment", () => {
-  expect(parse("* * * 1,2,3 * *")).toEqual({
-    second: [0],
-    month: [0, 1, 2],
-  });
+  expect(parse("* * * 1,2,3 * *")).toEqual(
+    schedule([0], u, u, u, [0, 1, 2], u, u)
+  );
 });
 
 test("named days", () => {
-  expect(parse("* * * * MON,WED *")).toEqual({
-    second: [0],
-    dayOfWeek: [1, 3],
-  });
+  expect(parse("* * * * MON,WED *")).toEqual(
+    schedule([0], u, u, u, u, [1, 3], u)
+  );
 });
 
 test("named month range", () => {
-  expect(parse("* * * JAN-MAR * *")).toEqual({
-    second: [0],
-    month: [0, 1, 2],
-  });
+  expect(parse("* * * JAN-MAR * *")).toEqual(
+    schedule([0], u, u, u, [0, 1, 2], u, u)
+  );
 });
 
 test("named month range", () => {
-  expect(parse("* * * JAN-MAR * *")).toEqual({
-    second: [0],
-    month: [0, 1, 2],
-  });
+  expect(parse("* * * JAN-MAR * *")).toEqual([[0], u, u, u, [0, 1, 2], u, u]);
 });
 
 test("second upper bound", () => {

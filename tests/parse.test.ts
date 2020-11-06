@@ -64,6 +64,7 @@ test("named month range", () => {
 test("second upper bound", () => {
   try {
     parse("60 * * * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Second is out of bounds (0-59): 60");
   }
@@ -72,6 +73,7 @@ test("second upper bound", () => {
 test("second lower bound", () => {
   try {
     parse("-1 * * * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Second is out of bounds (0-59): -1");
   }
@@ -80,6 +82,7 @@ test("second lower bound", () => {
 test("minute upper bound", () => {
   try {
     parse("60 * * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Minute is out of bounds (0-59): 60");
   }
@@ -88,6 +91,7 @@ test("minute upper bound", () => {
 test("minute lower bound", () => {
   try {
     parse("-1 * * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Minute is out of bounds (0-59): -1");
   }
@@ -96,6 +100,7 @@ test("minute lower bound", () => {
 test("hour upper bound", () => {
   try {
     parse("* 24 * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Hour is out of bounds (0-23): 24");
   }
@@ -104,6 +109,7 @@ test("hour upper bound", () => {
 test("hour lower bound", () => {
   try {
     parse("* -1 * * * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Hour is out of bounds (0-23): -1");
   }
@@ -112,6 +118,7 @@ test("hour lower bound", () => {
 test("day of month lower bound", () => {
   try {
     parse("* * 0 * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Day of month is out of bounds (1-31): 0");
   }
@@ -120,6 +127,7 @@ test("day of month lower bound", () => {
 test("day of month upper bound", () => {
   try {
     parse("* * 32 * *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Day of month is out of bounds (1-31): 32");
   }
@@ -128,6 +136,7 @@ test("day of month upper bound", () => {
 test("month lower bound", () => {
   try {
     parse("* * * 0 *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Month is out of bounds (1-12): 0");
   }
@@ -136,6 +145,7 @@ test("month lower bound", () => {
 test("month upper bound", () => {
   try {
     parse("* * * 13 *");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Month is out of bounds (1-12): 13");
   }
@@ -144,6 +154,7 @@ test("month upper bound", () => {
 test("day of week lower bound", () => {
   try {
     parse("* * * * -1");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Day of week is out of bounds (0-6): -1");
   }
@@ -152,6 +163,7 @@ test("day of week lower bound", () => {
 test("day of week upper bound", () => {
   try {
     parse("* * * * 7");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Day of week is out of bounds (0-6): 7");
   }
@@ -160,6 +172,7 @@ test("day of week upper bound", () => {
 test("year lower bound", () => {
   try {
     parse("* * * * * 1969");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Year is out of bounds (1970-3000): 1969");
   }
@@ -168,7 +181,44 @@ test("year lower bound", () => {
 test("year upper bound", () => {
   try {
     parse("* * * * * 3001");
+    throw new Error("Didn't throw expected error");
   } catch (error) {
     expect(error.message).toBe("Year is out of bounds (1970-3000): 3001");
+  }
+});
+
+test("range start after end", () => {
+  try {
+    parse("* * * * * 2000-1999");
+    throw new Error("Didn't throw expected error");
+  } catch (error) {
+    expect(error.message).toBe("Year invalid range: start cannot be after end");
+  }
+});
+
+test("invalid value", () => {
+  try {
+    parse("* * * * * foo");
+    throw new Error("Didn't throw expected error");
+  } catch (error) {
+    expect(error.message).toBe("Year invalid value: foo");
+  }
+});
+
+test("extra fields", () => {
+  try {
+    parse("* * * * * * * *");
+    throw new Error("Didn't throw expected error");
+  } catch (error) {
+    expect(error.message).toBe("Too many fields");
+  }
+});
+
+test("too few fields", () => {
+  try {
+    parse("* * * *");
+    throw new Error("Didn't throw expected error");
+  } catch (error) {
+    expect(error.message).toBe("Too few fields");
   }
 });

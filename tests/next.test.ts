@@ -115,3 +115,13 @@ test("changing DST when iterating", () => {
   const expected = new Date("2020-09-02T00:00:00");
   expect(next([u, u, u, [2], u, [3], u], input)).toEqual(expected);
 });
+
+test("out of years", () => {
+  const input = new Date("2020-06-01T00:00:00");
+  expect(next([[0], [0], [0], [1], [0], u, [2020]], input)).toBeUndefined();
+});
+
+test("next step is out of years", () => {
+  const input = new Date("2020-01-01T00:00:00");
+  expect(next([[0], [0], [0], [1], [0], u, [2020]], input)).toBeUndefined();
+});

@@ -1,0 +1,30 @@
+name: Test and Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: ['14']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set Node.js version ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+
+      - name: Restore Packages
+        run: yarn
+
+      - name: Test
+        run: yarn test --coverage
+
+      - name: Build
+        run: yarn build
+
+      - name: Pack
+        run: yarn pack

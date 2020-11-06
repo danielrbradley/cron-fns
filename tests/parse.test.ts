@@ -1,4 +1,4 @@
-import { parse } from "./index";
+import { parse } from "../index";
 
 test("5 wildcards", () => {
   expect(parse("* * * * *")).toEqual({

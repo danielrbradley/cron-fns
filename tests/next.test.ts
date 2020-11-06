@@ -1,4 +1,4 @@
-import { next } from "./index";
+import { next } from "../index";
 
 test("no constraints", () => {
   const input = new Date("2020-01-01T00:00:00");

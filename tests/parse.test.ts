@@ -1,4 +1,4 @@
-import { parse } from "../index";
+import { parse } from "../parse";
 
 const u = undefined;
 const schedule = (...schedule: ReturnType<typeof parse>) => schedule;

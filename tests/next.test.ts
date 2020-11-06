@@ -1,4 +1,4 @@
-import { next } from "../index";
+import { next } from "../next";
 
 const u = undefined;
 

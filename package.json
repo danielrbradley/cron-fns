@@ -1,13 +1,31 @@
 {
   "name": "cron-fns",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./index.js",
+  "typings": "./index.d.ts",
   "author": "Daniel Bradley",
   "license": "MIT",
+  "homepage": "https://github.com/danielrbradley/cron-fns",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielrbradley/cron-fns.git"
+  },
+  "bugs": {
+    "url": "https://github.com/danielrbradley/cron-fns/issues"
+  },
+  "keywords": [
+    "cron",
+    "crontab",
+    "time",
+    "date",
+    "schedule"
+  ],
   "scripts": {
+    "clean": "git clean -xdf -e node_modules",
     "build": "tsc",
     "test": "jest"
   },
+  "files": ["*.js", "*.js.map", "*.d.ts"],
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",

@@ -1,3 +1,3 @@
-export { Cron } from "./Cron";
-export { nextCronOccurrence } from "./nextCronOccurrence";
-export { nextCronOccurrences } from "./nextCronOccurrences";
+export * from "./Cron";
+export * from "./nextCronOccurrence";
+export * from "./nextCronOccurrences";

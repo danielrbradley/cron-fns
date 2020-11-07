@@ -152,6 +152,12 @@ function moveToNextValidDate(current: Date, schedule: Schedule): 0 | 1 | -1 {
   return 1;
 }
 
+/**
+ * Internal function for finding the next date from a parsed schedule.
+ *
+ * Avoid depending on this method directly as it might change without notice.
+ * @internal
+ */
 export const next = (schedule: Schedule, from: Date): Date | undefined => {
   const date = new Date(from.getTime());
   switch (moveToNextValidDate(date, schedule)) {

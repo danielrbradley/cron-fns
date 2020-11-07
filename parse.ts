@@ -101,6 +101,12 @@ function parseField(input: string, field: Field): number[] | undefined {
   return input.split(",").map(parseValue);
 }
 
+/**
+ * Internal method to parse a string to an internal Schedule representation.
+ *
+ * Avoid depending on this method directly as it might change without notice.
+ * @internal
+ */
 export function parse(input: string): Schedule {
   const fields = input.split(" ");
   if (fields.length > 7) throw new Error("Too many fields");

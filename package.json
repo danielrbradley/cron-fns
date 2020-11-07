@@ -1,6 +1,6 @@
 {
   "name": "cron-fns",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "main": "./index.js",
   "typings": "./index.d.ts",
   "author": "Daniel Bradley",
@@ -23,7 +23,9 @@
   "scripts": {
     "clean": "rimraf *.d.ts *.js *.map tests/*.d.ts tests/*.js tests/*.map *.tgz",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "commit": "cz",
+    "semantic-release": "semantic-release"
   },
   "files": [
     "*.js",
@@ -36,8 +38,10 @@
     "@babel/preset-typescript": "^7.12.1",
     "@types/jest": "^26.0.15",
     "babel-jest": "^26.6.1",
+    "commitizen": "^4.2.2",
     "jest": "^26.6.1",
     "rimraf": "^3.0.2",
+    "semantic-release": "^17.2.2",
     "typescript": "^4.0.5"
   }
 }

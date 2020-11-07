@@ -1,3 +1,8 @@
+/**
+ * @packageDocumentation
+ * @ignore
+ */
+
 /** @name Schedule
  *  @description Any field which is undefined is assumed to be unconstrained.
  */

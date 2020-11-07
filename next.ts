@@ -1,4 +1,9 @@
-import { Field, parse, Schedule } from "./parse";
+/**
+ * @packageDocumentation
+ * @ignore
+ */
+
+import { Field, Schedule } from "./parse";
 
 function findNext(
   current: number,

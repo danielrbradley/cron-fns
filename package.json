@@ -24,7 +24,7 @@
     "clean": "rimraf *.d.ts *.js *.map tests/*.d.ts tests/*.js tests/*.map *.tgz coverage documentation",
     "build": "tsc",
     "test": "jest",
-    "doc": "typedoc --out ./documentation/ ./*.ts",
+    "doc": "typedoc --out ./documentation/ ./*.ts && touch documentation/.nojekyll",
     "commit": "cz",
     "semantic-release": "semantic-release"
   },

@@ -1,8 +1,8 @@
 {
   "name": "cron-fns",
   "version": "0.0.0-development",
-  "main": "./index.js",
-  "typings": "./index.d.ts",
+  "main": "./cron-fns.js",
+  "typings": "./cron-fns.d.ts",
   "author": "Daniel Bradley",
   "license": "MIT",
   "homepage": "https://github.com/danielrbradley/cron-fns",
@@ -24,7 +24,7 @@
     "clean": "rimraf *.d.ts *.js *.map tests/*.d.ts tests/*.js tests/*.map *.tgz coverage documentation",
     "build": "tsc",
     "test": "jest",
-    "docs": "typedoc --out ./documentation/ --stripInternal ./index.ts",
+    "docs": "typedoc --out ./documentation/ --stripInternal ./cron-fns.ts",
     "commit": "cz",
     "semantic-release": "semantic-release"
   },

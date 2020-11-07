@@ -12,9 +12,48 @@ yarn add cron-fns
 
 ## Usage
 
+### `nextCronOccurrence(schedule, from?) => Date | undefined`
+
+Fetches the next date that matches the schedule, or undefined if no other time is available.
+
 ```ts
 import { nextCronOccurrence } from "cron-fns";
 
+nextCronOccurrence("0,30 9-17 * * MON", new Date("2020-01-01T00:00:00"));
+// Returns 2020-01-06T09:00:00
+
+// `from` defaults to the current date if not specified.
+nextCronOccurrence("0,30 9-17 * * MON 1987");
+// Returns undefined if no more possible dates
+```
+
+### `nextCronOccurrences(schedule, from?)`
+
+Returns a generator which iterates through each sequential date in order from the specified start point. The generator will only stop iterating if there is no more possible dates.
+
+```ts
+import { nextCronOccurrences } from "cron-fns";
+
+nextCronOccurrences("0,30 9-10 * * MON", new Date("2020-01-01T00:00:00"));
+// Returns a generator with the sequence:
+// 2020-01-06T09:00:00
+// 2020-01-06T09:30:00
+// 2020-01-06T10:00:00
+// ...
+```
+
+### `Cron`
+
+```ts
+import { Cron } from "cron-fns";
+const cron = new Cron("0,30 9-17 * * MON");
+cron.next(); // Returns the next date from now
+cron.next(new Date("2020-01-01T00:00:00")); // Returns 2020-01-06T09:00:00
+```
+
+## Cron syntax rules
+
+```ts
 //                    ┌───────────── minute (0 - 59)
 //                    │    ┌───────────── hour (0 - 23)
 //                    │    │  ┌───────────── day of the month (1 - 31)
@@ -22,12 +61,8 @@ import { nextCronOccurrence } from "cron-fns";
 //                    │    │  │ │  ┌───────────── day of the week (0 - 6) (Sunday to Saturday)
 //                    │    │  │ │  │
 //                    │    │  │ │  │
-nextCronOccurrence("0,30 9-17 * * MON", new Date("2020-01-01T00:00:00"));
-
-// Result: 2020-01-06T09:00:00
+nextCronOccurrence("0,30 9-17 * * MON");
 ```
-
-## Cron syntax rules
 
 - Use a single space to separate fields.
 - Enumerate multiple values for a field by separating by a comma (`,`).

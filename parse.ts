@@ -103,7 +103,9 @@ function parseField(input: string, field: Field): number[] | undefined {
     return range;
   }
 
-  return input.split(",").map(parseValue);
+  return Array.from(new Set(input.split(",").map(parseValue))).sort(
+    (a, b) => a - b
+  );
 }
 
 /**

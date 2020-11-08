@@ -222,3 +222,15 @@ test("too few fields", () => {
     expect(error.message).toBe("Too few fields");
   }
 });
+
+test("de-duplicates list items", () => {
+  expect(parse("1,2,2,3 * * * *")).toEqual(
+    schedule([0], [1, 2, 3], u, u, u, u, u)
+  );
+});
+
+test("orders list items", () => {
+  expect(parse("1,3,2 * * * *")).toEqual(
+    schedule([0], [1, 2, 3], u, u, u, u, u)
+  );
+});

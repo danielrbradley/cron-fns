@@ -17,6 +17,32 @@ yarn add cron-fns
 
 ## Usage
 
+### `CronDaemon`
+
+Executes a callback on a given schedule.
+
+_Note: This should be stopped if no longer in use in the application_
+
+```ts
+import { CronDaemon } from "cron-fns";
+
+const daemon = new CronDaemon("0,30 9-17 * * MON", () => {
+  console.log("do some work");
+});
+
+// Check when it's going to run next
+console.log(daemon.next());
+
+// Stop the daemon
+daemon.stop();
+
+// Start it again
+daemon.start();
+
+// Check if it's running
+console.log(daemon.state()); // "running"
+```
+
 ### `nextCronOccurrence(schedule, from?) => Date | undefined`
 
 Fetches the next date that matches the schedule, or undefined if no other time is available.

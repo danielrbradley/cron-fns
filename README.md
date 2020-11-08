@@ -1,3 +1,8 @@
+[![npm version](https://badge.fury.io/js/cron-fns.svg)](https://www.npmjs.com/package/cron-fns)
+[![GitHub issues](https://img.shields.io/github/issues/danielrbradley/cron-fns.svg)](https://github.com/danielrbradley/cron-fns/issues)
+[![TypeDoc docs](https://img.shields.io/badge/TypeDoc-docs-green.svg)](https://www.danielbradley.net/cron-fns/)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/danielrbradley/cron-fns/Release)](https://github.com/danielrbradley/cron-fns/actions?query=workflow%3ARelease)
+
 # cron-fns
 
 A simple, zero dependency implementation of cron schedule functions.

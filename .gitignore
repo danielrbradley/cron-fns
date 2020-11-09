@@ -205,3 +205,5 @@ $RECYCLE.BIN/
 *.js.map
 *.d.ts
 documentation/
+.stryker-tmp/
+reports/

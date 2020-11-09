@@ -24,6 +24,7 @@
     "clean": "rimraf *.d.ts *.js *.map tests/*.d.ts tests/*.js tests/*.map *.tgz coverage documentation",
     "build": "tsc",
     "test": "jest",
+    "stryker": "stryker run",
     "doc": "typedoc --out ./documentation/ ./*.ts && touch documentation/.nojekyll",
     "commit": "cz",
     "semantic-release": "semantic-release"
@@ -37,6 +38,8 @@
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.12.1",
+    "@stryker-mutator/core": "^4.1.2",
+    "@stryker-mutator/jest-runner": "^4.1.2",
     "@types/jest": "^26.0.15",
     "babel-jest": "^26.6.1",
     "commitizen": "^4.2.2",

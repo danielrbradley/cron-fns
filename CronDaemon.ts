@@ -5,17 +5,34 @@ import { next } from "./next";
 const MAX_DELAY = Math.pow(2, 32 - 1) - 1;
 
 /**
+ * Calculate the next time to execute the job.
+ */
+export type CustomSchedule = (now: Date) => Date | undefined;
+
+/**
  * Execute a cron schedule. The Daemon is initialized in the "started" state.
- * @param schedule Cron schedule string e.g. `0,30 9-17 * * MON-FRI`
+ * @param schedule Cron schedule string e.g. `0,30 9-17 * * MON-FRI` or custom function to calculate the next date.
  * @param callback Function to be invoked on the schedule.
  * @throws If the schedule string is not valid cron syntax.
  */
 export class CronDaemon {
-  private readonly schedule: Schedule;
+  private readonly schedule: Schedule | CustomSchedule;
   private readonly callback: (date: Date) => void;
   private timeout?: ReturnType<typeof setTimeout>;
-  constructor(schedule: string, callback: (triggered: Date) => void) {
-    this.schedule = parse(schedule);
+  constructor(
+    schedule: string | CustomSchedule,
+    callback: (triggered: Date) => void
+  ) {
+    switch (typeof schedule) {
+      case "string":
+        this.schedule = parse(schedule);
+        break;
+      case "function":
+        this.schedule = schedule;
+        break;
+      default:
+        throw new Error("Invalid schedule type");
+    }
     this.callback = callback;
     this.start();
   }
@@ -48,7 +65,9 @@ export class CronDaemon {
    * Get the next occurance in the schedule.
    * @returns The next instant when the daemon will execute the callback or undefined if the schedule has no more possible instances. */
   next(): Date | undefined {
-    return next(this.schedule, new Date());
+    return typeof this.schedule === "function"
+      ? this.schedule(new Date())
+      : next(this.schedule, new Date());
   }
 
   /**

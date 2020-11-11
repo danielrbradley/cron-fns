@@ -58,3 +58,23 @@ test("can call stop multiple times", async () => {
   expect(daemon.state()).toEqual("stopped");
   expect(callback).not.toHaveBeenCalled();
 });
+
+test("custom date function", async () => {
+  const callback = jest.fn();
+  const daemon = new CronDaemon((now) => {
+    const next = new Date(now);
+    next.setTime(now.getTime() + 10);
+    return next;
+  }, callback);
+  await waitFor(20);
+  expect(callback).toHaveBeenCalled();
+});
+
+test("Invalid schedule type causes an error", () => {
+  try {
+    new CronDaemon({} as any, jest.fn());
+    throw new Error("Should have failed validation");
+  } catch (error) {
+    expect(error.message).toEqual("Invalid schedule type");
+  }
+});

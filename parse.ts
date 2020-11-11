@@ -69,6 +69,16 @@ const fieldsConfig: FieldConfig[] = [
   { name: "Year", min: 1970, max: 3000, adjustment: 0, names: {} },
 ];
 
+function uniq<T>(source: T[]): T[] {
+  const target = [];
+  for (const item of source) {
+    if (target.indexOf(item) < 0) {
+      target.push(item);
+    }
+  }
+  return target;
+}
+
 function parseField(input: string, field: Field): number[] | undefined {
   if (input === "*") return undefined;
   const config = fieldsConfig[field];
@@ -103,9 +113,7 @@ function parseField(input: string, field: Field): number[] | undefined {
     return range;
   }
 
-  return Array.from(new Set(input.split(",").map(parseValue))).sort(
-    (a, b) => a - b
-  );
+  return uniq(input.split(",").map(parseValue)).sort((a, b) => a - b);
 }
 
 /**

@@ -1,0 +1,222 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>cron-fns</title>
+	<meta name="description" content="Documentation for cron-fns">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">cron-fns</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1>cron-fns</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#cron-fns" id="cron-fns" style="color: inherit; text-decoration: none;">
+					<h1>cron-fns</h1>
+				</a>
+				<p>A simple, zero dependency implementation of cron schedule functions. Runs in the browser, in Node.js, in Deno, anywhere with <code>setTimeout</code>.</p>
+				<p><a href="https://www.npmjs.com/package/cron-fns"><img src="https://badge.fury.io/js/cron-fns.svg" alt="npm version"></a>
+					<a href="https://github.com/danielrbradley/cron-fns/issues"><img src="https://img.shields.io/github/issues/danielrbradley/cron-fns.svg" alt="GitHub issues"></a>
+					<a href="https://www.danielbradley.net/cron-fns/"><img src="https://img.shields.io/badge/TypeDoc-docs-green.svg" alt="TypeDoc docs"></a>
+				<a href="https://github.com/danielrbradley/cron-fns/actions?query=workflow%3ARelease"><img src="https://img.shields.io/github/workflow/status/danielrbradley/cron-fns/Release" alt="GitHub Workflow Status"></a></p>
+				<a href="#quick-start" id="quick-start" style="color: inherit; text-decoration: none;">
+					<h2>Quick Start</h2>
+				</a>
+				<pre><code class="language-bash">npm install cron-fns --save
+<span class="hljs-comment"># or with yarn</span>
+yarn add cron-fns</code></pre>
+				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+					<h2>Usage</h2>
+				</a>
+				<a href="#crondaemon" id="crondaemon" style="color: inherit; text-decoration: none;">
+					<h3><code>CronDaemon</code></h3>
+				</a>
+				<p>Executes a callback on a given schedule.</p>
+				<p><em>Note: This should be stopped if no longer in use in the application</em></p>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { CronDaemon } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;cron-fns&quot;</span>;
+
+<span class="hljs-keyword">const</span> daemon = <span class="hljs-keyword">new</span> CronDaemon(<span class="hljs-string">&quot;0,30 9-17 * * MON&quot;</span>, <span class="hljs-function">() =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;do some work&quot;</span>);
+});
+
+<span class="hljs-comment">// Check when it&#x27;s going to run next</span>
+<span class="hljs-built_in">console</span>.log(daemon.next());
+
+<span class="hljs-comment">// Stop the daemon</span>
+daemon.stop();
+
+<span class="hljs-comment">// Start it again</span>
+daemon.start();
+
+<span class="hljs-comment">// Check if it&#x27;s running</span>
+<span class="hljs-built_in">console</span>.log(daemon.state()); <span class="hljs-comment">// &quot;running&quot;</span></code></pre>
+				<a href="#nextcronoccurrenceschedule-from-gt-date--undefined" id="nextcronoccurrenceschedule-from-gt-date--undefined" style="color: inherit; text-decoration: none;">
+					<h3><code>nextCronOccurrence(schedule, from?) =&gt; Date | undefined</code></h3>
+				</a>
+				<p>Fetches the next date that matches the schedule, or undefined if no other time is available.</p>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { nextCronOccurrence } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;cron-fns&quot;</span>;
+
+nextCronOccurrence(<span class="hljs-string">&quot;0,30 9-17 * * MON&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-string">&quot;2020-01-01T00:00:00&quot;</span>));
+<span class="hljs-comment">// Returns 2020-01-06T09:00:00</span>
+
+<span class="hljs-comment">// `from` defaults to the current date if not specified.</span>
+nextCronOccurrence(<span class="hljs-string">&quot;0,30 9-17 * * MON 1987&quot;</span>);
+<span class="hljs-comment">// Returns undefined if no more possible dates</span></code></pre>
+				<a href="#nextcronoccurrencesschedule-from" id="nextcronoccurrencesschedule-from" style="color: inherit; text-decoration: none;">
+					<h3><code>nextCronOccurrences(schedule, from?)</code></h3>
+				</a>
+				<p>Returns a generator which iterates through each sequential date in order from the specified start point. The generator will only stop iterating if there is no more possible dates.</p>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { nextCronOccurrences } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;cron-fns&quot;</span>;
+
+nextCronOccurrences(<span class="hljs-string">&quot;0,30 9-10 * * MON&quot;</span>, <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-string">&quot;2020-01-01T00:00:00&quot;</span>));
+<span class="hljs-comment">// Returns a generator with the sequence:</span>
+<span class="hljs-comment">// 2020-01-06T09:00:00</span>
+<span class="hljs-comment">// 2020-01-06T09:30:00</span>
+<span class="hljs-comment">// 2020-01-06T10:00:00</span>
+<span class="hljs-comment">// ...</span></code></pre>
+				<a href="#cron" id="cron" style="color: inherit; text-decoration: none;">
+					<h3><code>Cron</code></h3>
+				</a>
+				<pre><code class="language-ts"><span class="hljs-keyword">import</span> { Cron } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;cron-fns&quot;</span>;
+<span class="hljs-keyword">const</span> cron = <span class="hljs-keyword">new</span> Cron(<span class="hljs-string">&quot;0,30 9-17 * * MON&quot;</span>);
+cron.next(); <span class="hljs-comment">// Returns the next date from now</span>
+cron.next(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(<span class="hljs-string">&quot;2020-01-01T00:00:00&quot;</span>)); <span class="hljs-comment">// Returns 2020-01-06T09:00:00</span></code></pre>
+				<a href="#cron-syntax-rules" id="cron-syntax-rules" style="color: inherit; text-decoration: none;">
+					<h2>Cron syntax rules</h2>
+				</a>
+				<pre><code class="language-ts"><span class="hljs-comment">//                    ┌───────────── minute (0 - 59)</span>
+<span class="hljs-comment">//                    │    ┌───────────── hour (0 - 23)</span>
+<span class="hljs-comment">//                    │    │  ┌───────────── day of the month (1 - 31)</span>
+<span class="hljs-comment">//                    │    │  │ ┌───────────── month (1 - 12)</span>
+<span class="hljs-comment">//                    │    │  │ │  ┌───────────── day of the week (0 - 6) (Sunday to Saturday)</span>
+<span class="hljs-comment">//                    │    │  │ │  │</span>
+<span class="hljs-comment">//                    │    │  │ │  │</span>
+nextCronOccurrence(<span class="hljs-string">&quot;0,30 9-17 * * MON&quot;</span>);</code></pre>
+				<ul>
+					<li>Use a single space to separate fields.</li>
+					<li>Enumerate multiple values for a field by separating by a comma (<code>,</code>).</li>
+					<li>Specify a range of values with a hyphen (<code>-</code>).</li>
+					<li>Ranges and enumeration cannot be mixed.</li>
+				</ul>
+				<a href="#cron-variations-amp-notes" id="cron-variations-amp-notes" style="color: inherit; text-decoration: none;">
+					<h2>Cron variations &amp; notes</h2>
+				</a>
+				<a href="#optional-years" id="optional-years" style="color: inherit; text-decoration: none;">
+					<h3>Optional years</h3>
+				</a>
+				<p>If you specify 6 fields then the last field is the year. If not specifed it doesn&#39;t limit by year.</p>
+				<a href="#optional-seconds" id="optional-seconds" style="color: inherit; text-decoration: none;">
+					<h3>Optional seconds</h3>
+				</a>
+				<p>If you specify 7 fields then the first field is the second. If not specified it chooses the zeroth second of each minute.</p>
+				<a href="#timezones" id="timezones" style="color: inherit; text-decoration: none;">
+					<h3>Timezones</h3>
+				</a>
+				<p>All times and dates are based on the system (or browser&#39;s) local timezone.</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_cron_.html">&quot;<wbr>Cron&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_crondaemon_.html">&quot;<wbr>Cron<wbr>Daemon&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_cron_fns_.html">&quot;cron-<wbr>fns&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_nextcronoccurrence_.html">&quot;next<wbr>Cron<wbr>Occurrence&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_nextcronoccurrences_.html">&quot;next<wbr>Cron<wbr>Occurrences&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

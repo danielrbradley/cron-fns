@@ -1,8 +1,8 @@
 import { parse, Schedule } from "./parse";
 import { next } from "./next";
 
-// When delay is larger than 2147483647 or less than 1, the delay will be set to 1.
-const MAX_DELAY = Math.pow(2, 32 - 1) - 1;
+// When delay is larger than `(2^31) - 1)` the delay will be set to 1.
+const MAX_DELAY = 2147483647;
 
 /**
  * Calculate the next time to execute the job.
